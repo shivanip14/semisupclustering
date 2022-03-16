@@ -1,1 +1,1 @@
-# semisupclustering
+# Semi-Supervied Clustering
