@@ -3,9 +3,10 @@ import warnings
 import pandas as pd
 import math
 
-def get_init_seed_set(X, y = np.array([]), n_seeds = 0, n_clusters = 0, manually_annotate = False):
+def get_init_seed_set(X, y = np.array([]), seed_fraction = 0.1, n_clusters = 0, manually_annotate = False):
     if n_clusters <= 0:
         raise ValueError('No. of clusters should be a positive integer')
+    n_seeds = int(seed_fraction * X.shape[0])
     if n_seeds <= n_clusters:
         raise ValueError('No. of seeds should be >= no. of clusters')
     if not y.size and not manually_annotate:
@@ -19,7 +20,6 @@ def get_init_seed_set(X, y = np.array([]), n_seeds = 0, n_clusters = 0, manually
         init_seed_set = _sample_n_seeds(n_seeds, n_clusters, pd.DataFrame(np.c_[X, y]), False)
     # Since true labels are not available, user needs to manually annotate the randomly chosen seeds until **at least one seed per class** condition is satisfied
     else:
-        # TODO
         print('Manually annotate the seeds selected below with the cluster no. (0 - {}):\n'.format(n_clusters - 1))
         init_seed_set = _sample_n_seeds(n_seeds, n_clusters, pd.DataFrame(X), True)
         cluster = np.zeros((init_seed_set.shape[0], 1))
