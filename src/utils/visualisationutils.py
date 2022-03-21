@@ -24,4 +24,5 @@ def visualise_clusters(algo_name, X, y, computed_y, seeds, orig_seed_labels, com
     subplot_computed.set_title('Computed clusters')
     subplot_computed.set_xlabel('PCA_1')
     subplot_computed.set_ylabel('PCA_2')
+    plt.savefig('../results/' + algo_name + ' clusters.png')
     plt.show()

@@ -1,21 +1,14 @@
-from src.seededkm.seededkm import SeededKMeans
-from src.constrainedkm.constrainedkm import ConstrainedKMeans
-from src.utils.seedutils import get_init_seed_set
-from sklearn import datasets
-import numpy as np
+from src.runners.iris_runner import cluster as iris
+from src.runners.twentynewsgroups_runner import cluster as twentynewsgroups
 
-iris = datasets.load_iris()
-X = iris.data
-y = iris.target
+available_dataset_runners = [iris, twentynewsgroups]
+
 n_clusters = 3
 n_seeds = 5
-manually_annotate = True
-init_seed_set = get_init_seed_set(X = X, y = y, n_seeds = n_seeds, n_clusters = n_clusters, manually_annotate = manually_annotate)
+manually_annotate = False
+runner = iris
 
-skm = SeededKMeans(n_clusters)
-skm.fit(X, y, init_seed_set)
-skm.visualise_results()
-
-ckm = ConstrainedKMeans(n_clusters)
-ckm.fit(X, y, init_seed_set)
-ckm.visualise_results()
+if runner not in available_dataset_runners:
+    raise ValueError('Select dataset from a list of available ones!')
+else:
+    runner(n_clusters, n_seeds, manually_annotate)
