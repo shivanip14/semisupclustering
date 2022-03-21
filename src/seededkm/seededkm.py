@@ -24,21 +24,23 @@ class SeededKMeans():
         self.seeds = init_seed_set[:, :-1]
         self.labels = init_seed_set[:, -1]
         self.orig_seed_labels = self.labels
-        print('Initial seed set:\n', init_seed_set)
+        self.seed_indices = [np.flatnonzero((self.X == seed).all(1))[0] for seed in self.seeds]
+        print('Initial seed indices:\n', self.seed_indices)
         for iter in range(self.max_iter):
             print('Running iteration #', iter)
             if iter == 0:
                 self.centroids = compute_initial_centroids_from_seed_set(init_seed_set = init_seed_set, n_clusters = self.n_clusters)
             old_labels = self.labels
-            self.labels, self.centroids = recompute_centroids(X = X, old_centroids = self.centroids, orig_seeds = self.seeds, enable_seed_cluster_change = True)
+            self.labels, self.centroids = recompute_centroids(X = X, old_centroids = self.centroids, enable_seed_cluster_change = True)
 
             if is_same_clustering(old_labels = old_labels, labels = self.labels):
                 print('Terminating as cluster membership did not change from previous iteration')
                 break
 
     def visualise_results(self):
+        # each of the seed's index in X -> labels[index]
         computed_seed_labels = np.array([self.labels[np.flatnonzero((self.X == seed).all(1))[0]] for seed in self.seeds])
-        visualise_clusters(self.X, self.y, self.labels, self.seeds, self.orig_seed_labels, computed_seed_labels)
+        visualise_clusters('Seeded K-Means', self.X, self.y, self.labels, self.seeds, self.orig_seed_labels, computed_seed_labels)
 
     def predict(self, x_test):
         # TODO
