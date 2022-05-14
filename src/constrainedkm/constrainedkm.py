@@ -5,9 +5,12 @@ from sklearn import metrics
 from scipy.spatial import distance
 
 class ConstrainedKMeans():
-    def __init__(self, seed_fraction, n_clusters, max_iter = 100):
+    def __init__(self, seed_fraction, noise_fraction, completeness_fraction, n_clusters, dataset_name, max_iter = 100):
         self.n_clusters = n_clusters
+        self.dataset_name = dataset_name
         self.seed_fraction = seed_fraction
+        self.noise_fraction = noise_fraction
+        self.completeness_fraction = completeness_fraction
         self.max_iter = max_iter
         self.X = np.array([])
         self.y = np.array([])
@@ -46,7 +49,7 @@ class ConstrainedKMeans():
 
     def visualise_results(self):
         computed_seed_labels = [self.labels[ind] for ind in self.seed_indices]
-        visualise_clusters('Constrained K-Means', self.X, self.y, self.labels, self.n_clusters, self.seeds, self.seed_fraction, self.orig_seed_labels, computed_seed_labels)
+        visualise_clusters('Constrained_KMeans', self.dataset_name, self.X, self.y, self.labels, self.n_clusters, self.seeds, self.seed_fraction, self.orig_seed_labels, computed_seed_labels)
 
     def predict(self, X_test, y_test):
         self.X_test = X_test

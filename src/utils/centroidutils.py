@@ -16,8 +16,11 @@ def recompute_centroids(X, old_centroids, orig_seed_labels = [], orig_seed_indic
     else:
         new_labels = [np.argmin([distance.euclidean(x, centroid) for centroid in old_centroids]) if ind not in orig_seed_indices else int(orig_seed_labels[orig_seed_indices.index(ind)]) for ind, x in enumerate(X)]
     for cluster_no in range(old_centroids.shape[0]):
-        cluster_members = np.array(itemgetter(*list(np.where(np.array(new_labels) == cluster_no)[0]))(X))
-        new_centroids[cluster_no] = [np.sum(cluster_members[:, feature_no])/cluster_members.shape[0] for feature_no in range(X.shape[1])]
+        cluster_members = np.array(itemgetter(list(np.where(np.array(new_labels) == cluster_no)[0]))(X))
+        if cluster_members.shape[0] == 0:
+            new_centroids[cluster_no] = old_centroids[cluster_no]
+        else:
+            new_centroids[cluster_no] = [np.sum(cluster_members[:, feature_no])/cluster_members.shape[0] for feature_no in range(X.shape[1])]
     return new_labels, new_centroids
 
 def is_same_clustering(old_labels, labels):

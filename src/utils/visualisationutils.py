@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from operator import itemgetter
 
-def visualise_clusters(algo_name, X, y, computed_y, n_clusters, seeds, seed_fraction, orig_seed_labels, computed_seed_labels):
+def visualise_clusters(algo_name, dataset_name, X, y, computed_y, n_clusters, seeds, seed_fraction, orig_seed_labels, computed_seed_labels):
     pca = PCA(n_components=2)
     pca_result = pca.fit_transform(X)
     # each of the seed's index in X -> pca_result[index]
@@ -35,5 +35,8 @@ def visualise_clusters(algo_name, X, y, computed_y, n_clusters, seeds, seed_frac
     subplot_computed.set_title('Computed clusters')
     subplot_computed.set_xlabel('PCA_1')
     subplot_computed.set_ylabel('PCA_2')
-    plt.savefig('../results/' + algo_name + ' clusters.png')
-    plt.show()
+    plt.savefig('../results/' + algo_name + '_' + dataset_name + '_clusters.png')
+    #plt.show()
+    plt.clf()
+    plt.cla()
+    plt.close()

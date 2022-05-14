@@ -1,15 +1,15 @@
-from src.runners.iris_runner import cluster as iris
-from src.runners.twentynewsgroups_runner import cluster as twentynewsgroups
-
-available_dataset_runners = [iris, twentynewsgroups]
+from src.constants.datasets import available_datasets
+from src.perftrackers.ami_vs_seedfraction import plot_ami_vs_seedfraction_for_runner
+from src.perftrackers.ami_vs_noisefraction import plot_ami_vs_noisefraction_for_runner
+import numpy as np
+from src.runners.iris_runner import cluster
 
 n_fold = 10
 n_clusters = 3
-seed_fraction = 0.1
 manually_annotate = False
-runner = iris
+dataset = available_datasets.get('iris')
 
-if runner not in available_dataset_runners:
-    raise ValueError('Select dataset from a list of available ones!')
-else:
-    runner(n_clusters, seed_fraction, manually_annotate, n_fold)
+np.random.seed(0)
+
+#plot_ami_vs_seedfraction_for_runner(n_fold, n_clusters, manually_annotate, dataset, True)
+plot_ami_vs_noisefraction_for_runner(n_fold, n_clusters, manually_annotate, dataset, True)
