@@ -2,21 +2,32 @@ from src.utils.centroidutils import compute_initial_centroids_from_seed_set, is_
 import numpy as np
 from src.utils.visualisationutils import visualise_clusters
 from sklearn import metrics
+from scipy.spatial import distance
 
 class ConstrainedKMeans():
-    def __init__(self, n_clusters = 0, max_iter = 100):
+    def __init__(self, seed_fraction, noise_fraction, completeness_fraction, n_clusters, dataset_name, max_iter = 100):
         self.n_clusters = n_clusters
+        self.dataset_name = dataset_name
+        self.seed_fraction = seed_fraction
+        self.noise_fraction = noise_fraction
+        self.completeness_fraction = completeness_fraction
         self.max_iter = max_iter
         self.X = np.array([])
         self.y = np.array([])
         self.labels = np.array([])
         self.orig_seed_labels = np.array([])
         self.centroids = np.array([])
+        self.ari = -1
+        self.ami = -1
+        self.ari_intermediate = 0
+        self.ami_intermediate = 0
         self._check_params()
 
     def _check_params(self):
         if self.n_clusters <= 0:
             raise ValueError('No. of clusters should be a positive integer')
+        if self.seed_fraction <= 0 or self.seed_fraction > 1:
+            raise ValueError('seed_fraction should be (0, 1]')
         #TODO - introduce more checks
 
     def fit(self, X, y, init_seed_set):
@@ -38,13 +49,35 @@ class ConstrainedKMeans():
 
     def visualise_results(self):
         computed_seed_labels = [self.labels[ind] for ind in self.seed_indices]
-        visualise_clusters('Constrained K-Means', self.X, self.y, self.labels, self.seeds, self.orig_seed_labels, computed_seed_labels)
+        visualise_clusters('Constrained_KMeans', self.dataset_name, self.X, self.y, self.labels, self.n_clusters, self.seeds, self.seed_fraction, self.orig_seed_labels, computed_seed_labels)
 
-    def predict(self, x_test):
-        # TODO
-        self.x_test = x_test
+    def predict(self, X_test, y_test):
+        self.X_test = X_test
+        self.y_test = y_test
+        self.test_labels = [np.argmin([distance.euclidean(x, centroid) for centroid in self.centroids]) for x in X_test]
 
-    def evaluate(self):
-        print('\nConstrained K-Means evaluation:')
-        print('Adjusted RAND Score: {}'.format(metrics.adjusted_rand_score(self.y, self.labels)))
-        print('Adjusted Mutual Info Score: {}'.format(metrics.adjusted_mutual_info_score(self.y, self.labels)))
+    def evaluate_train(self):
+        print('\nConstrained K-Means training evaluation:')
+        self.evaluate(self.y, self.labels)
+
+    def evaluate_test(self):
+        print('\nConstrained K-Means test evaluation:')
+        self.evaluate(self.y_test, self.test_labels)
+
+    def evaluate(self, true_labels, computed_labels):
+        print('Adjusted RAND Score: {}'.format(metrics.adjusted_rand_score(true_labels, computed_labels)))
+        print('Adjusted Mutual Info Score: {}'.format(metrics.adjusted_mutual_info_score(true_labels, computed_labels)))
+
+    def evaluate_fold(self, n_fold, iter):
+        if iter == 0:
+            self.ari_intermediate = 0
+            self.ami_intermediate = 0
+        self.ari_intermediate += metrics.adjusted_rand_score(self.y_test, self.test_labels)
+        self.ami_intermediate += metrics.adjusted_mutual_info_score(self.y_test, self.test_labels)
+        self.ari = -1
+        self.ami = -1
+        if iter == n_fold - 1:
+            self.ari = self.ari_intermediate / n_fold
+            self.ami = self.ami_intermediate / n_fold
+
+        return self.ari, self.ami
