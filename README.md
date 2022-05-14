@@ -1,1 +1,1 @@
-# Semi-Supervied Clustering
+# Semi-Supervised Clustering
