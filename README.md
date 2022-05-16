@@ -1,1 +1,3 @@
 # Semi-Supervised Clustering
+
+The objective of this project is to implement the 2 semi-supervised variations of the K-means clustering algorithms, namely, Seeded K-Means and Constrained K-means, as illustrated in the paper Semi-supervised Clustering by Seeding (http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.7.9416). This report covers the custom implementation of the same, its comparison with similar other existing algorithms, impact of the hyperparameters (noise level in labelling, fraction of labelled seeds and the completeness of labelling), and the evaluation measures used for the same.
