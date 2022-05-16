@@ -16,11 +16,11 @@ def cluster(n_clusters, seed_fraction, noise_fraction, incompleteness_fraction, 
     y = newsgroups_train.target
 
     skm = SeededKMeans(seed_fraction, noise_fraction, incompleteness_fraction, n_clusters, 'twentynewsgroups')
-    seeded_ari, seeded_ami = run_algo(skm, X, y, n_fold, manually_annotate)
+    seeded_ari, seeded_ami = run_algo(skm, 'Seeded K-Means', X, y, n_fold, manually_annotate)
     skm.visualise_results()
 
     ckm = ConstrainedKMeans(seed_fraction, noise_fraction, incompleteness_fraction, n_clusters, 'twentynewsgroups')
-    constrained_ari, constrained_ami = run_algo(ckm, X, y, n_fold, manually_annotate)
+    constrained_ari, constrained_ami = run_algo(ckm, 'Constrained K-Means', X, y, n_fold, manually_annotate)
     ckm.visualise_results()
 
     kmeans_ari = 0

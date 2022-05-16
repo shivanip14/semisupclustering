@@ -56,7 +56,7 @@ def get_init_seed_set(X, y = np.array([]), seed_fraction = 0.1, noise_fraction =
         # which won't have such cluster labels if incompleteness_fraction < 1
         noisy_seeds = random.sample(range(0, init_seed_set.shape[0]), math.floor(noise_fraction * init_seed_set.shape[0]))
         for idx in noisy_seeds:
-            # TODO how to introduce label noise so that init_seed_set still has atleast one seed per class?
+            # Introducing label noise so that init_seed_set still has atleast one seed per class?
             # Method 1
             # init_seed_set[idx, -1] = possible_labels[(possible_labels.index(init_seed_set[idx, -1]) + 1) % len(possible_labels)]
 
@@ -77,5 +77,5 @@ def _sample_n_seeds(n_seeds, n_clusters, allowed_clusters, all_data_df, manually
         else:
             init_seed_set = all_data_df.groupby(all_data_df.shape[1] - 1).apply(lambda x: x.sample(n=math.floor(n_seeds / n_clusters), replace = True)).reset_index(drop=True)
             if n_clusters % n_seeds != 0:
-                init_seed_set = init_seed_set.append(all_data_df.sample(n_seeds % n_clusters))  # TODO avoid repeated sampling
+                init_seed_set = init_seed_set.append(all_data_df.sample(n_seeds % n_clusters))
     return init_seed_set.values
