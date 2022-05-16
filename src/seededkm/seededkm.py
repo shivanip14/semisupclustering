@@ -22,13 +22,16 @@ class SeededKMeans():
         self.ari_intermediate = 0
         self.ami_intermediate = 0
         self._check_params()
+        print('SeededKMeans object initialised:\n{}'.format(self))
+
+    def __str__(self):
+        return 'Dataset name: {}\nNo. of clusters: {}\nSeed fraction: {}\nNoise fraction: {}\nIncompleteness fraction: {}\n'.format(self.dataset_name, self.n_clusters, self.seed_fraction, self.noise_fraction, self.incompleteness_fraction)
 
     def _check_params(self):
         if self.n_clusters <= 0:
             raise ValueError('No. of clusters should be a positive integer')
         if self.seed_fraction <= 0 or self.seed_fraction > 1:
             raise ValueError('seed_fraction should be (0, 1]')
-        #TODO - introduce more checks
 
     def fit(self, X, y, init_seed_set):
         self.X = X
