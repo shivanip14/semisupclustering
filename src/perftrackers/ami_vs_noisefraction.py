@@ -5,13 +5,13 @@ def plot_ami_vs_noisefraction_for_runner(n_fold, n_clusters, manually_annotate, 
     noise_fractions = np.arange(0, 1, 0.05)
     seed_fraction_1 = 0.3
     seed_fraction_2 = 0.7
-    completeness_fraction = 1
+    incompleteness_fraction = 0
     perf_metrics_1 = np.zeros((noise_fractions.shape[0], 6))
     perf_metrics_2 = np.zeros((noise_fractions.shape[0], 6))
     for idx, noise_fraction in enumerate(noise_fractions):
         print('\nClustering {} for NF = {:.2f}'.format(str(dataset['name']), noise_fraction))
-        perf_metrics_1[idx] = dataset['runner'](n_clusters, seed_fraction_1, noise_fraction, completeness_fraction, manually_annotate, n_fold, run_KM)
-        perf_metrics_2[idx] = dataset['runner'](n_clusters, seed_fraction_2, noise_fraction, completeness_fraction, manually_annotate, n_fold, False)
+        perf_metrics_1[idx] = dataset['runner'](n_clusters, seed_fraction_1, noise_fraction, incompleteness_fraction, manually_annotate, n_fold, run_KM)
+        perf_metrics_2[idx] = dataset['runner'](n_clusters, seed_fraction_2, noise_fraction, incompleteness_fraction, manually_annotate, n_fold, False)
     fig = plt.figure()
     subplot_ami = fig.add_subplot(121)
     subplot_ari = fig.add_subplot(122)

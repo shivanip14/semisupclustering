@@ -5,12 +5,12 @@ from sklearn import metrics
 from scipy.spatial import distance
 
 class SeededKMeans():
-    def __init__(self, seed_fraction, noise_fraction, completeness_fraction, n_clusters, dataset_name, max_iter = 100):
+    def __init__(self, seed_fraction, noise_fraction, incompleteness_fraction, n_clusters, dataset_name, max_iter = 100):
         self.n_clusters = n_clusters
         self.dataset_name = dataset_name
         self.seed_fraction = seed_fraction
         self.noise_fraction = noise_fraction
-        self.completeness_fraction = completeness_fraction
+        self.incompleteness_fraction = incompleteness_fraction
         self.max_iter = max_iter
         self.X = np.array([])
         self.y = np.array([])
@@ -39,7 +39,7 @@ class SeededKMeans():
         self.seed_indices = [np.flatnonzero((self.X == seed).all(1))[0] for seed in self.seeds]
         for iter in range(self.max_iter):
             if iter == 0:
-                self.centroids = compute_initial_centroids_from_seed_set(init_seed_set = init_seed_set, n_clusters = self.n_clusters)
+                self.centroids = compute_initial_centroids_from_seed_set(init_seed_set = init_seed_set, n_clusters = self.n_clusters, X = X)
             old_labels = self.labels
             self.labels, self.centroids = recompute_centroids(X = X, old_centroids = self.centroids, enable_seed_cluster_change = True)
 
@@ -69,16 +69,5 @@ class SeededKMeans():
         print('Adjusted RAND Score: {}'.format(metrics.adjusted_rand_score(true_labels, computed_labels)))
         print('Adjusted Mutual Info Score: {}'.format(metrics.adjusted_mutual_info_score(true_labels, computed_labels)))
 
-    def evaluate_fold(self, n_fold, iter):
-        if iter == 0:
-            self.ari_intermediate = 0
-            self.ami_intermediate = 0
-        self.ari_intermediate += metrics.adjusted_rand_score(self.y_test, self.test_labels)
-        self.ami_intermediate += metrics.adjusted_mutual_info_score(self.y_test, self.test_labels)
-        self.ari = -1
-        self.ami = -1
-        if iter == n_fold - 1:
-            self.ari = self.ari_intermediate / n_fold
-            self.ami = self.ami_intermediate / n_fold
-
-        return self.ari, self.ami
+    def evaluate_scores(self):
+        return metrics.adjusted_rand_score(self.y_test, self.test_labels), metrics.adjusted_mutual_info_score(self.y_test, self.test_labels)

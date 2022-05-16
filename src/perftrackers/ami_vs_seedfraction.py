@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 def plot_ami_vs_seedfraction_for_runner(n_fold, n_clusters, manually_annotate, dataset, run_KM = False, run_COPKM = False, run_agglo = False, run_gaussianmm = False):
     seed_fractions = np.arange(0.1, 1, 0.05)
     noise_fraction = 0
-    completeness_fraction = 1
+    incompleteness_fraction = 0
     perf_metrics = np.zeros((seed_fractions.shape[0], 6))
     for idx, seed_fraction in enumerate(seed_fractions):
         print('\nClustering {} for SF = {:.2f}'.format(str(dataset['name']), seed_fraction))
-        perf_metrics[idx] = dataset['runner'](n_clusters, seed_fraction, noise_fraction, completeness_fraction, manually_annotate, n_fold, run_KM)
+        perf_metrics[idx] = dataset['runner'](n_clusters, seed_fraction, noise_fraction, incompleteness_fraction, manually_annotate, n_fold, run_KM)
     fig = plt.figure()
     subplot_ami = fig.add_subplot(121)
     subplot_ari = fig.add_subplot(122)

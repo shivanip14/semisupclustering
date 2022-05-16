@@ -6,7 +6,7 @@ from scipy.io.arff import loadarff
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import normalize
 
-def cluster(n_clusters, seed_fraction, noise_fraction, completeness_fraction, manually_annotate, n_fold):
+def cluster(n_clusters, seed_fraction, noise_fraction, incompleteness_fraction, manually_annotate, n_fold):
     data, meta = loadarff('../data/waveform/waveform.arff')
     df = pd.DataFrame(data)
 
@@ -20,11 +20,11 @@ def cluster(n_clusters, seed_fraction, noise_fraction, completeness_fraction, ma
     df_num = df.drop('class', axis = 1)
     X = normalize(df_num.values)
 
-    skm = SeededKMeans(seed_fraction, noise_fraction, completeness_fraction, n_clusters, 'waveform')
+    skm = SeededKMeans(seed_fraction, noise_fraction, incompleteness_fraction, n_clusters, 'waveform')
     seeded_ari, seeded_ami = run_algo(skm, X, y, n_fold, manually_annotate)
     skm.visualise_results()
 
-    ckm = ConstrainedKMeans(seed_fraction, noise_fraction, completeness_fraction, n_clusters, 'waveform')
+    ckm = ConstrainedKMeans(seed_fraction, noise_fraction, incompleteness_fraction, n_clusters, 'waveform')
     constrained_ari, constrained_ami = run_algo(ckm, X, y, n_fold, manually_annotate)
     ckm.visualise_results()
 
