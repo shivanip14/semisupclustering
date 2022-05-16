@@ -7,7 +7,7 @@ import numpy as np
 n_fold = 10
 n_clusters = 3
 manually_annotate = False
-dataset = available_datasets.get('iris')
+dataset = available_datasets.get('waveform')
 
 np.random.seed(0)
 
